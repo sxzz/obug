@@ -26,6 +26,15 @@ npm install obug
 
 Please refer to the original [debug](https://github.com/debug-js/debug#usage) package for usage instructions.
 
+## Original Authors
+
+As obug is a fork of debug, we would like to acknowledge the original authors:
+
+- TJ Holowaychuk
+- Nathan Rajlich
+- Andrew Rhyne
+- Josh Junon
+
 ## Sponsors
 
 <p align="center">
