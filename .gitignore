@@ -1,12 +1,7 @@
-.DS_Store
-node_modules/
-*.sock
-/build/
-npm-debug.log
-yarn-error.log
-/dist/
-/coverage/
+node_modules
+dist
+coverage
 
-# lockfiles
-yarn.lock
-package-lock.json
+*.log
+.DS_Store
+.eslintcache

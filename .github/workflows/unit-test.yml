@@ -1,0 +1,23 @@
+name: Unit Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  unit-test:
+    uses: sxzz/workflows/.github/workflows/unit-test.yml@v1
+    with:
+      test: 'pnpm playwright install --with-deps && pnpm run test'
+
+  coverage:
+    uses: sxzz/workflows/.github/workflows/coverage.yml@v1
+    needs: unit-test
+    with:
+      test: pnpm vitest --project node --coverage
+    permissions:
+      id-token: write
