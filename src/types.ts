@@ -50,7 +50,6 @@ export interface Debug {
   formatArgs: (this: Debugger, args: [string, ...any[]]) => void
   log: (...args: any[]) => void
   selectColor: (namespace: string) => string | number
-  // humanize: typeof import('ms')
 
   names: string[]
   skips: string[]
