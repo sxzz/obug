@@ -215,3 +215,4 @@ createDebug.formatters.j = function (v) {
 }
 
 export default createDebug
+export type * from './types.ts'
