@@ -14,7 +14,7 @@ export function log(...args: any[]): void {
   process.stderr.write(`${formatWithOptions(inspectOpts, ...args)}\n`)
 }
 
-export const colors: number[] =
+const colors: number[] =
   process.stderr.getColorDepth && process.stderr.getColorDepth() > 2
     ? [
         20, 21, 26, 27, 32, 33, 38, 39, 40, 41, 42, 43, 44, 45, 56, 57, 62, 63,
@@ -62,7 +62,7 @@ function load(): string {
   return process.env.DEBUG || ''
 }
 
-function save(namespaces: string) {
+function save(namespaces: string): void {
   if (namespaces) {
     process.env.DEBUG = namespaces
   } else {
@@ -75,7 +75,7 @@ function save(namespaces: string) {
 /**
  * Is stdout a TTY? Colored output is enabled when `true`.
  */
-export function useColors(): boolean {
+function useColors(): boolean {
   return 'colors' in inspectOpts
     ? Boolean(inspectOpts.colors)
     : isatty(process.stderr.fd)
@@ -113,7 +113,7 @@ function getDate(): string {
   return `${new Date().toISOString()} `
 }
 
-function init(debug: Debugger) {
+function init(debug: Debugger): void {
   debug.inspectOpts = Object.assign({}, inspectOpts)
 }
 
@@ -150,3 +150,10 @@ createDebug.formatters.O = function (v) {
 
 export default createDebug
 export type * from './types.ts'
+
+// @ts-expect-error
+createDebug.default = createDebug
+// @ts-expect-error
+createDebug.debug = createDebug
+
+export { createDebug as 'module.exports' }

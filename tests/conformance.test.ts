@@ -12,17 +12,23 @@ const removedAPIs = new Set([
   'load', // private API
   'colors', // private API
   'useColors', // private API
+  'inspectOpts', // private API
 ])
 
 describe('conformance', () => {
   test('require: same exports', () => {
     const debug = require('debug')
-    const obug = require('../dist/node')
+    const obugNode = require('../dist/node')
     const debugKeys = Object.keys(debug)
       .filter((key) => !removedAPIs.has(key))
       .sort()
-    const obugKeys = Object.keys(obug).sort()
+    const obugKeys = Object.keys(obugNode)
+      .filter((k) => k !== 'inspectOpts')
+      .sort()
     expect(obugKeys).toEqual(debugKeys)
+
+    const obugBrowser = require('../dist/browser')
+    expect(Object.keys(obugBrowser).sort()).toEqual(obugKeys)
   })
 
   test('import: same exports', async () => {
@@ -35,5 +41,8 @@ describe('conformance', () => {
       .filter((key) => key !== 'createDebug' && key !== 'module.exports')
       .sort()
     expect(obugKeys).toEqual(debugKeys)
+
+    const obugBrowser = await import('../dist/browser')
+    expect(Object.keys(obugBrowser).sort()).toEqual(Object.keys(obug).sort())
   })
 })

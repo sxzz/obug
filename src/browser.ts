@@ -2,7 +2,7 @@ import { setup } from './core.ts'
 import { humanize } from './utils.ts'
 import type { Debug, Debugger } from './types.ts'
 
-export const colors: string[] = [
+const colors: string[] = [
   '#0000CC',
   '#0000FF',
   '#0033CC',
@@ -81,7 +81,7 @@ export const colors: string[] = [
   '#FFCC33',
 ]
 
-export function useColors(): boolean {
+function useColors(): boolean {
   return true
 }
 
@@ -213,3 +213,10 @@ createDebug.formatters.j = function (v) {
 
 export default createDebug
 export type * from './types.ts'
+
+// @ts-expect-error
+createDebug.default = createDebug
+// @ts-expect-error
+createDebug.debug = createDebug
+
+export { createDebug as 'module.exports' }
