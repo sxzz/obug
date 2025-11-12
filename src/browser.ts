@@ -1,6 +1,12 @@
-import { setup } from './core.ts'
-import { humanize } from './utils.ts'
-import type { Debug, Debugger } from './types.ts'
+import {
+  createDebug as _createDebug,
+  enable as _enable,
+  disable,
+  enabled,
+  namespaces,
+} from './core.ts'
+import { humanize, selectColor } from './utils.ts'
+import type { Debugger, DebugOptions } from './types.ts'
 
 const colors: string[] = [
   '#0000CC',
@@ -81,14 +87,14 @@ const colors: string[] = [
   '#FFCC33',
 ]
 
-function useColors(): boolean {
-  return true
-}
-
 /**
  * Colorize log arguments if enabled.
  */
-export function formatArgs(this: Debugger, args: [string, ...any[]]): void {
+function formatArgs(
+  this: Debugger,
+  diff: number,
+  args: [string, ...any[]],
+): void {
   const { useColors } = this
   args[0] = `${
     (useColors ? '%c' : '') +
@@ -96,7 +102,7 @@ export function formatArgs(this: Debugger, args: [string, ...any[]]): void {
     (useColors ? ' %c' : ' ') +
     args[0] +
     (useColors ? '%c ' : ' ')
-  }+${humanize(this.diff!)}`
+  }+${humanize(diff)}`
 
   if (!useColors) {
     return
@@ -131,7 +137,43 @@ export function formatArgs(this: Debugger, args: [string, ...any[]]): void {
  * If `console.debug` is not available, falls back
  * to `console.log`.
  */
-export const log: Debugger['log'] = console.debug || console.log || (() => {})
+const log = console.debug || console.log || (() => {})
+
+// Use non-null assertion operator because
+// we handle the case where storage is undefined in load/save.
+const storage = localstorage()!
+
+const defaultOptions: Omit<Required<DebugOptions>, 'color'> = {
+  useColors: true,
+
+  formatArgs,
+  formatters: {
+    /**
+     * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+     */
+    j(v) {
+      try {
+        return JSON.stringify(v)
+      } catch (error: any) {
+        return `[UnexpectedJSONParseError]: ${error.message}`
+      }
+    },
+  },
+  inspectOpts: {},
+
+  log,
+}
+
+export function createDebug(
+  namespace: string,
+  options?: DebugOptions,
+): Debugger {
+  const color = (options && options.color) ?? selectColor(colors, namespace)
+  return _createDebug(
+    namespace,
+    Object.assign(defaultOptions, { color }, options),
+  )
+}
 
 /**
  * Localstorage attempts to return the localstorage.
@@ -150,30 +192,7 @@ function localstorage(): Storage | undefined {
     // XXX (@Qix-) should we be logging these?
   }
 }
-// Use non-null assertion operator because
-// we handle the case where storage is undefined in load/save.
-const storage = localstorage()!
 
-/**
- * Save `namespaces`.
- */
-function save(namespaces: string) {
-  try {
-    if (namespaces) {
-      storage.setItem('debug', namespaces)
-    } else {
-      storage.removeItem('debug')
-    }
-  } catch {
-    // Swallow
-    // XXX (@Qix-) should we be logging these?
-  }
-}
-
-/**
- * Load `namespaces`.
- * @return returns the previously persisted debug modes
- */
 function load(): string {
   let r: string | null | undefined
   try {
@@ -191,32 +210,26 @@ function load(): string {
   return r || ''
 }
 
-export const createDebug: Debug = setup(
-  useColors(),
-  colors,
-  log,
-  load,
-  save,
-  formatArgs,
-)
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-createDebug.formatters.j = function (v) {
+function save(namespaces: string) {
   try {
-    return JSON.stringify(v)
-  } catch (error: any) {
-    return `[UnexpectedJSONParseError]: ${error.message}`
+    if (namespaces) {
+      storage.setItem('debug', namespaces)
+    } else {
+      storage.removeItem('debug')
+    }
+  } catch {
+    // Swallow
+    // XXX (@Qix-) should we be logging these?
   }
 }
 
-export default createDebug
+function enable(namespaces: string): void {
+  save(namespaces)
+  _enable(namespaces)
+}
+
+// side-effect
+_enable(load())
+
 export type * from './types.ts'
-
-// @ts-expect-error
-createDebug.default = createDebug
-// @ts-expect-error
-createDebug.debug = createDebug
-
-export { createDebug as 'module.exports' }
+export { disable, enable, enabled, namespaces }

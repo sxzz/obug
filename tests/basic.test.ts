@@ -1,12 +1,12 @@
 import { assert, describe, it } from 'vitest'
 
-const { createDebug: debug } = await import(
+const { createDebug, enable, disable } = (await import(
   globalThis.process ? '../src/node' : '../src/browser'
-)
+)) as typeof import('../src/node')
 
 describe('basic', () => {
   it('passes a basic sanity check', () => {
-    const log = debug('test')
+    const log = createDebug('test')
     log.enabled = true
     log.log = () => {}
 
@@ -14,16 +14,16 @@ describe('basic', () => {
   })
 
   it('honors global debug namespace enable calls', () => {
-    assert.deepStrictEqual(debug('test:12345').enabled, false)
-    assert.deepStrictEqual(debug('test:67890').enabled, false)
+    assert.deepStrictEqual(createDebug('test:12345').enabled, false)
+    assert.deepStrictEqual(createDebug('test:67890').enabled, false)
 
-    debug.enable('test:12345')
-    assert.deepStrictEqual(debug('test:12345').enabled, true)
-    assert.deepStrictEqual(debug('test:67890').enabled, false)
+    enable('test:12345')
+    assert.deepStrictEqual(createDebug('test:12345').enabled, true)
+    assert.deepStrictEqual(createDebug('test:67890').enabled, false)
   })
 
   it('uses custom log function', () => {
-    const log = debug('test')
+    const log = createDebug('test')
     log.enabled = true
 
     const messages = []
@@ -38,7 +38,7 @@ describe('basic', () => {
 
   describe('extend namespace', () => {
     it('should extend namespace', () => {
-      const log = debug('foo')
+      const log = createDebug('foo')
       log.enabled = true
       log.log = () => {}
 
@@ -47,7 +47,7 @@ describe('basic', () => {
     })
 
     it('should extend namespace with custom delimiter', () => {
-      const log = debug('foo')
+      const log = createDebug('foo')
       log.enabled = true
       log.log = () => {}
 
@@ -56,7 +56,7 @@ describe('basic', () => {
     })
 
     it('should extend namespace with empty delimiter', () => {
-      const log = debug('foo')
+      const log = createDebug('foo')
       log.enabled = true
       log.log = () => {}
 
@@ -65,7 +65,7 @@ describe('basic', () => {
     })
 
     it('should keep the log function between extensions', () => {
-      const log = debug('foo')
+      const log = createDebug('foo')
       log.log = () => {}
 
       const logBar = log.extend('bar')
@@ -75,40 +75,34 @@ describe('basic', () => {
 
   describe('rebuild namespaces string (disable)', () => {
     it('handle names, skips, and wildcards', () => {
-      debug.enable('test,abc*,-abc')
-      const namespaces = debug.disable()
+      enable('test,abc*,-abc')
+      const namespaces = disable()
       assert.deepStrictEqual(namespaces, 'test,abc*,-abc')
     })
 
     it('handles empty', () => {
-      debug.enable('')
-      const namespaces = debug.disable()
+      enable('')
+      const namespaces = disable()
       assert.deepStrictEqual(namespaces, '')
-      assert.deepStrictEqual(debug.names, [])
-      assert.deepStrictEqual(debug.skips, [])
     })
 
     it('handles all', () => {
-      debug.enable('*')
-      const namespaces = debug.disable()
+      enable('*')
+      const namespaces = disable()
       assert.deepStrictEqual(namespaces, '*')
     })
 
     it('handles skip all', () => {
-      debug.enable('-*')
-      const namespaces = debug.disable()
+      enable('-*')
+      const namespaces = disable()
       assert.deepStrictEqual(namespaces, '-*')
     })
 
     it('names+skips same with new string', () => {
-      debug.enable('test,abc*,-abc')
-      const oldNames = [...debug.names]
-      const oldSkips = [...debug.skips]
-      const namespaces = debug.disable()
+      enable('test,abc*,-abc')
+      const namespaces = disable()
       assert.deepStrictEqual(namespaces, 'test,abc*,-abc')
-      debug.enable(namespaces)
-      assert.deepStrictEqual(oldNames.map(String), debug.names.map(String))
-      assert.deepStrictEqual(oldSkips.map(String), debug.skips.map(String))
+      enable(namespaces)
     })
 
     // it('handles re-enabling existing instances', () => {

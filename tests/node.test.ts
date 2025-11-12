@@ -1,7 +1,6 @@
-import { afterEach } from 'node:test'
 import { formatWithOptions } from 'node:util'
-import { describe, expect, it, vi } from 'vitest'
-import debug from '../src/node'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createDebug, enable } from '../src/node'
 import type { InspectOptions } from '../src/types'
 
 vi.mock('node:util', async (importActual) => {
@@ -11,23 +10,24 @@ vi.mock('node:util', async (importActual) => {
     formatWithOptions: vi.fn(actual.formatWithOptions),
   }
 })
+
 vi.spyOn(process.stderr, 'write').mockImplementation(() => true)
 
-afterEach(() => {
-  vi.resetAllMocks()
+beforeEach(() => {
+  vi.clearAllMocks()
 })
 
 describe('debug node', () => {
   describe('formatting options', () => {
     it('calls util.formatWithOptions', () => {
-      debug.enable('*')
-      const log = debug('formatting options')
+      enable('*')
+      const log = createDebug('formatting options')
       log('hello world')
       expect(formatWithOptions).toBeCalledTimes(1)
     })
 
     it('calls util.formatWithOptions with inspectOpts', () => {
-      debug.enable('*')
+      enable('*')
 
       const options: InspectOptions = {
         hideDate: true,
@@ -35,15 +35,15 @@ describe('debug node', () => {
         depth: 10,
         showHidden: true,
       }
-      Object.assign(debug.inspectOpts!, options)
-
-      const log = debug('format with inspectOpts')
+      const log = createDebug('format with inspectOpts', {
+        inspectOpts: options,
+      })
       log('hello world2')
-      // assert.deepStrictEqual(util.formatWithOptions.getCall(0).args[0], options)
+
       expect(formatWithOptions).toHaveBeenNthCalledWith(
         1,
         options,
-        expect.stringMatching(/.+ formatting options hello world$/),
+        expect.stringMatching(/.+ format with inspectOpts hello world2$/),
       )
     })
   })

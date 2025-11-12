@@ -1,18 +1,17 @@
 import { createRequire } from 'node:module'
 import { isatty } from 'node:tty'
 import { formatWithOptions, inspect } from 'node:util'
-import { setup } from './core.ts'
-import { humanize as _humanize } from './utils.ts'
-import type { Debug, Debugger, InspectOptions } from './types.ts'
+import {
+  createDebug as _createDebug,
+  enable as _enable,
+  disable,
+  enabled,
+  namespaces,
+} from './core.ts'
+import { humanize as _humanize, selectColor } from './utils.ts'
+import type { Debugger, DebugOptions, InspectOptions } from './types.ts'
 
 const require = createRequire(import.meta.url)
-
-/**
- * Invokes `util.formatWithOptions()` with the specified arguments and writes to stderr.
- */
-export function log(...args: any[]): void {
-  process.stderr.write(`${formatWithOptions(inspectOpts, ...args)}\n`)
-}
 
 const colors: number[] =
   process.stderr.getColorDepth && process.stderr.getColorDepth() > 2
@@ -26,9 +25,7 @@ const colors: number[] =
     : [6, 2, 3, 4, 5, 1]
 
 const inspectOpts: InspectOptions = Object.keys(process.env)
-  .filter((key) => {
-    return /^debug_/i.test(key)
-  })
+  .filter((key) => /^debug_/i.test(key))
   .reduce(
     (obj, key) => {
       // Camel-case
@@ -41,8 +38,10 @@ const inspectOpts: InspectOptions = Object.keys(process.env)
       let value: any = process.env[key]
       if (value === 'null') {
         value = null
+        // TODO perf: don't use regex
       } else if (/^yes|on|true|enabled$/i.test(value)) {
         value = true
+        // TODO perf: don't use regex
       } else if (/^no|off|false|disabled$/i.test(value)) {
         value = false
       } else {
@@ -54,23 +53,6 @@ const inspectOpts: InspectOptions = Object.keys(process.env)
     },
     {} as Record<string, any>,
   )
-
-/**
- * Load `namespaces`.
- */
-function load(): string {
-  return process.env.DEBUG || ''
-}
-
-function save(namespaces: string): void {
-  if (namespaces) {
-    process.env.DEBUG = namespaces
-  } else {
-    // If you set a process.env field to null or undefined, it gets cast to the
-    // string 'null' or 'undefined'. Just delete instead.
-    delete process.env.DEBUG
-  }
-}
 
 /**
  * Is stdout a TTY? Colored output is enabled when `true`.
@@ -88,10 +70,21 @@ try {
   humanize = _humanize
 }
 
+function getDate(): string {
+  if (inspectOpts.hideDate) {
+    return ''
+  }
+  return `${new Date().toISOString()} `
+}
+
 /**
  * Adds ANSI color escape codes if enabled.
  */
-export function formatArgs(this: Debugger, args: [string, ...any[]]): void {
+export function formatArgs(
+  this: Debugger,
+  diff: number,
+  args: [string, ...any[]],
+): void {
   const { namespace: name, useColors } = this
 
   if (useColors) {
@@ -100,60 +93,73 @@ export function formatArgs(this: Debugger, args: [string, ...any[]]): void {
     const prefix = `  ${colorCode};1m${name} \u001B[0m`
 
     args[0] = prefix + args[0].split('\n').join(`\n${prefix}`)
-    args.push(`${colorCode}m+${humanize(this.diff!)}\u001B[0m`)
+    args.push(`${colorCode}m+${humanize(diff)}\u001B[0m`)
   } else {
     args[0] = `${getDate()}${name} ${args[0]}`
   }
 }
 
-function getDate(): string {
-  if (inspectOpts.hideDate) {
-    return ''
-  }
-  return `${new Date().toISOString()} `
+function log(this: Debugger, ...args: any[]): void {
+  process.stderr.write(`${formatWithOptions(this.inspectOpts, ...args)}\n`)
 }
 
-function init(debug: Debugger): void {
-  debug.inspectOpts = Object.assign({}, inspectOpts)
-}
+const defaultOptions: Omit<Required<DebugOptions>, 'color'> = {
+  useColors: useColors(),
 
-export const createDebug: Debug = setup(
-  useColors(),
-  colors,
-  log,
-  load,
-  save,
   formatArgs,
-  init,
-)
+  formatters: {
+    /**
+     * Map %o to `util.inspect()`, all on a single line.
+     */
+    o(v) {
+      this.inspectOpts.colors = this.useColors
+      return inspect(v, this.inspectOpts)
+        .split('\n')
+        .map((str) => str.trim())
+        .join(' ')
+    },
 
-createDebug.inspectOpts = inspectOpts
+    /**
+     * Map %O to `util.inspect()`, allowing multiple lines if needed.
+     */
+    O(v) {
+      this.inspectOpts.colors = this.useColors
+      return inspect(v, this.inspectOpts)
+    },
+  },
+  inspectOpts,
 
-/**
- * Map %o to `util.inspect()`, all on a single line.
- */
-createDebug.formatters.o = function (v) {
-  this.inspectOpts!.colors = this.useColors
-  return inspect(v, this.inspectOpts)
-    .split('\n')
-    .map((str) => str.trim())
-    .join(' ')
+  log,
 }
 
-/**
- * Map %O to `util.inspect()`, allowing multiple lines if needed.
- */
-createDebug.formatters.O = function (v) {
-  this.inspectOpts!.colors = this.useColors
-  return inspect(v, this.inspectOpts)
+export function createDebug(
+  namespace: string,
+  options?: DebugOptions,
+): Debugger {
+  const color = (options && options.color) ?? selectColor(colors, namespace)
+  return _createDebug(
+    namespace,
+    Object.assign(defaultOptions, { color }, options),
+  )
 }
 
-export default createDebug
+function save(namespaces: string): void {
+  if (namespaces) {
+    process.env.DEBUG = namespaces
+  } else {
+    // If you set a process.env field to null or undefined, it gets cast to the
+    // string 'null' or 'undefined'. Just delete instead.
+    delete process.env.DEBUG
+  }
+}
+
+function enable(namespaces: string): void {
+  save(namespaces)
+  _enable(namespaces)
+}
+
+// side-effect
+_enable(process.env.DEBUG || '')
+
 export type * from './types.ts'
-
-// @ts-expect-error
-createDebug.default = createDebug
-// @ts-expect-error
-createDebug.debug = createDebug
-
-export { createDebug as 'module.exports' }
+export { disable, enable, enabled, namespaces }
