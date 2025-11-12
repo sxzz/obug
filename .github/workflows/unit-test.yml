@@ -13,6 +13,7 @@ jobs:
     uses: sxzz/workflows/.github/workflows/unit-test.yml@v1
     with:
       test: 'pnpm playwright install --with-deps && pnpm run test'
+      typecheck: 'pnpm run build && pnpm run typecheck'
 
   coverage:
     uses: sxzz/workflows/.github/workflows/coverage.yml@v1
