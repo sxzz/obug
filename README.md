@@ -9,11 +9,13 @@ A lightweight JavaScript debugging utility, forked from [debug](https://www.npmj
 > [!NOTE]
 > obug v1 retains most of the compatibility with [debug](https://github.com/debug-js/debug), but drops support for older browsers and Node.js, making it a drop-in replacement.
 >
-> The upcoming v2 refactors some API imports and usage for better support of ESM and TypeScript, easier customization, and an even smaller package size.
+> obug v2 refactors some API imports and usage for better support of ESM and TypeScript, easier customization, and an even smaller package size.
 
 ## Key Differences from `debug`
 
 - ✨ Minimal footprint
+  - 7.7 kB package size
+  - 1.4 KB minified + gzipped for browsers
 - 📦 Zero dependencies
 - 📝 Full TypeScript support
 - 🚀 Native ESM compatibility
@@ -29,23 +31,16 @@ npm install obug
 
 ## Usage
 
-Please refer to the original [debug](https://github.com/debug-js/debug#usage) package for usage instructions.
-
-## Refactor Plan
-
-The obug package is currently a direct fork of the debug package with minimal modifications. The following refactor plan outlines the intended changes to be made in future releases.
-
 ```ts
 import { createDebug, disable, enable, enabled, namespaces } from 'obug'
 
 // Get the currently enabled namespaces
 console.log(namespaces())
 
-// createDebug has no extra properties or methods.
 const debug = createDebug('my-namespace', {
   // All options are optional
 
-  useColors: true, // false, true, 'auto'
+  useColors: true, // false, true, undefined for auto-detect
   color: 2, // custom color
   // custom formatArgs
   formatArgs(args) {},
@@ -79,7 +74,7 @@ For more details, please refer to the [src/types-v2.ts](./src/types-v2.ts).
 
 ## Original Authors
 
-As obug is a fork of debug, we would like to acknowledge the original authors:
+As obug is a fork of debug with significant modifications, we would like to acknowledge the original authors:
 
 - TJ Holowaychuk
 - Nathan Rajlich
