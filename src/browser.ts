@@ -2,9 +2,6 @@ import { setup } from './core.ts'
 import { humanize } from './utils.ts'
 import type { Debug, Debugger } from './types.ts'
 
-/**
- * Colors.
- */
 export const colors: string[] = [
   '#0000CC',
   '#0000FF',

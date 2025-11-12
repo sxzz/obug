@@ -12,6 +12,7 @@ export default defineConfig([
       }
     },
     hash: false,
+    minify: 'dce-only',
   },
   {
     entry: {
