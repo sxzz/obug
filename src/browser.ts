@@ -223,6 +223,10 @@ function save(namespaces: string) {
   }
 }
 
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ */
 function enable(namespaces: string): void {
   save(namespaces)
   _enable(namespaces)

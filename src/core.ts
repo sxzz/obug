@@ -3,6 +3,9 @@ import type { Debugger, DebugOptions } from './types.ts'
 
 let globalNamespaces: string = ''
 
+/**
+ * Returns a string of the currently enabled debug namespaces.
+ */
 export function namespaces(): string {
   return globalNamespaces
 }
@@ -127,6 +130,9 @@ export function enable(namespaces: string): void {
   }
 }
 
+/**
+ * Disable debug output.
+ */
 export function disable(): string {
   const namespaces = [
     ...names,
@@ -136,6 +142,9 @@ export function disable(): string {
   return namespaces
 }
 
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ */
 export function enabled(name: string): boolean {
   for (const skip of skips) {
     if (matchesTemplate(name, skip)) {

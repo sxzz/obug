@@ -4,6 +4,11 @@ export interface InspectOptions extends NodeInspectOptions {
   hideDate?: boolean
 }
 
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+ */
 export interface Formatters {
   [formatter: string]: (this: Debugger, v: any) => string
 }
