@@ -98,9 +98,9 @@ As obug is a fork of debug, we would like to acknowledge the original authors:
 
 [MIT](./LICENSE) License © 2025-PRESENT [Kevin Deng](https://github.com/sxzz)
 
-[The MIT License](./LICENSE-original) Copyright (c) 2014-2017 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+[The MIT License](./LICENSE) Copyright (c) 2014-2017 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
 
-[The MIT License](./LICENSE-original) Copyright (c) 2018-2021 Josh Junon
+[The MIT License](./LICENSE) Copyright (c) 2018-2021 Josh Junon
 
 <!-- Badges -->
 
