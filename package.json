@@ -1,6 +1,6 @@
 {
   "name": "obug",
-  "version": "1.0.0",
+  "version": "2.0.0-beta.1",
   "packageManager": "pnpm@10.21.0",
   "description": "A lightweight JavaScript debugging utility, forked from debug, featuring TypeScript and ESM support.",
   "type": "module",
