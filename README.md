@@ -71,8 +71,6 @@ sub('This is a sub-namespace debug message')
 console.log(sub.namespace) // 'my-namespace:sub-namespace'
 ```
 
-For more details, please refer to the [src/types-v2.ts](./src/types-v2.ts).
-
 ## Original Authors
 
 As obug is a fork of debug with significant modifications, we would like to acknowledge the original authors:
