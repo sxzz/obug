@@ -55,7 +55,7 @@ const inspectOpts: InspectOptions = Object.keys(process.env)
 
     obj[prop] = value
     return obj
-  }, {})
+  }, Object.create(null))
 
 /**
  * Is stdout a TTY? Colored output is enabled when `true`.
