@@ -2,6 +2,7 @@
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![JSR][jsr-badge-src]][jsr-badge-href]
 [![Unit Test][unit-test-src]][unit-test-href]
 
 A lightweight JavaScript debugging utility, forked from [debug](https://www.npmjs.com/package/debug), featuring TypeScript and ESM support.
@@ -104,3 +105,5 @@ As obug is a fork of debug with significant modifications, we would like to ackn
 [npm-downloads-href]: https://www.npmcharts.com/compare/obug?interval=30
 [unit-test-src]: https://github.com/sxzz/obug/actions/workflows/unit-test.yml/badge.svg
 [unit-test-href]: https://github.com/sxzz/obug/actions/workflows/unit-test.yml
+[jsr-badge-src]: https://jsr.io/badges/@sxzz/obug
+[jsr-badge-href]: https://jsr.io/@sxzz/obug
