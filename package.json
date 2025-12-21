@@ -2,7 +2,7 @@
   "name": "obug",
   "type": "module",
   "version": "2.1.1",
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.26.1",
   "description": "A lightweight JavaScript debugging utility, forked from debug, featuring TypeScript and ESM support.",
   "author": "Kevin Deng <sxzz@sxzz.moe>",
   "license": "MIT",
@@ -50,22 +50,22 @@
     "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
-    "@sxzz/eslint-config": "^7.4.1",
+    "@sxzz/eslint-config": "^7.4.3",
     "@sxzz/prettier-config": "^2.2.6",
     "@types/debug": "^4.1.12",
-    "@types/node": "^24.10.1",
-    "@typescript/native-preview": "7.0.0-dev.20251202.1",
-    "@vitest/browser-playwright": "^4.0.15",
-    "@vitest/coverage-v8": "^4.0.15",
+    "@types/node": "^25.0.3",
+    "@typescript/native-preview": "7.0.0-dev.20251221.1",
+    "@vitest/browser-playwright": "^4.0.16",
+    "@vitest/coverage-v8": "^4.0.16",
     "bumpp": "^10.3.2",
     "debug": "^4.4.3",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "playwright": "^1.57.0",
-    "prettier": "^3.7.3",
-    "tsdown": "^0.17.0-beta.5",
+    "prettier": "^3.7.4",
+    "tsdown": "^0.18.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.6",
-    "vitest": "^4.0.15"
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
   },
   "prettier": "@sxzz/prettier-config"
 }
