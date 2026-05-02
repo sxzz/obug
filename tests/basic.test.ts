@@ -1,7 +1,7 @@
 import { assert, describe, it } from 'vitest'
 
 const { createDebug, enable, disable } = (await import(
-  globalThis.process ? '../src/node' : '../src/browser'
+  /* @vite-ignore */ globalThis.process ? '../src/node' : '../src/browser'
 )) as typeof import('../src/node')
 
 describe('basic', () => {
