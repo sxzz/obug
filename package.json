@@ -1,7 +1,7 @@
 {
   "name": "obug",
   "type": "module",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "packageManager": "pnpm@11.5.1",
   "description": "A lightweight JavaScript debugging utility, forked from debug, featuring TypeScript and ESM support.",
   "author": "Kevin Deng <sxzz@sxzz.moe>",
