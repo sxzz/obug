@@ -6,10 +6,12 @@ export default defineConfig([
     platform: 'neutral',
     target: 'es2015',
     dts: true,
-    external: (id, importer) => {
-      if (importer?.endsWith('node.ts') && id.startsWith('node:')) {
-        return true
-      }
+    deps: {
+      neverBundle(id, importer) {
+        if (importer?.endsWith('node.ts') && id.startsWith('node:')) {
+          return true
+        }
+      },
     },
     hash: false,
     minify: 'dce-only',

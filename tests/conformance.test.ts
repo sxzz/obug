@@ -19,7 +19,7 @@ const removedAPIs = new Set([
 describe('conformance', () => {
   test('require: same exports', () => {
     const debug = require('debug')
-    const obugNode = require('../dist/node')
+    const obugNode = require('../dist/node.js')
     const debugKeys = Object.keys(debug)
       .filter((key) => !removedAPIs.has(key))
       .sort()
