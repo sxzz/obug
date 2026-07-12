@@ -10,8 +10,15 @@ import {
 import { humanize, selectColor } from './utils.ts'
 import type { Debugger, DebugOptions, InspectOptions } from './types.ts'
 
+let env: Record<string, string | undefined> = {}
+try {
+  // eslint-disable-next-line no-void -- Access process.env here because it may throw in restricted environments.
+  void process.env.DEBUG
+  env = process.env
+} catch {}
+
 const colors: number[] =
-  process.stderr.getColorDepth && process.stderr.getColorDepth() > 2
+  process.stderr.getColorDepth && process.stderr.getColorDepth(env) > 2
     ? [
         20, 21, 26, 27, 32, 33, 38, 39, 40, 41, 42, 43, 44, 45, 56, 57, 62, 63,
         68, 69, 74, 75, 76, 77, 78, 79, 80, 81, 92, 93, 98, 99, 112, 113, 128,
@@ -21,7 +28,7 @@ const colors: number[] =
       ]
     : [6, 2, 3, 4, 5, 1]
 
-const inspectOpts: InspectOptions = Object.keys(process.env)
+const inspectOpts: InspectOptions = Object.keys(env)
   .filter((key) => /^debug_/i.test(key))
   .reduce<Record<string, any>>((obj, key) => {
     // Camel-case
@@ -31,7 +38,7 @@ const inspectOpts: InspectOptions = Object.keys(process.env)
       .replace(/_([a-z])/g, (_, k) => k.toUpperCase())
 
     // Coerce string value into JS value
-    let value: any = process.env[key]
+    let value: any = env[key]
     const lowerCase = typeof value === 'string' && value.toLowerCase()
     if (value === 'null') {
       value = null
@@ -142,11 +149,11 @@ export function createDebug(
 
 function save(namespaces: string): void {
   if (namespaces) {
-    process.env.DEBUG = namespaces
+    env.DEBUG = namespaces
   } else {
     // If you set a process.env field to null or undefined, it gets cast to the
     // string 'null' or 'undefined'. Just delete instead.
-    delete process.env.DEBUG
+    delete env.DEBUG
   }
 }
 
@@ -160,7 +167,7 @@ function enable(namespaces: string): void {
 }
 
 // side-effect
-_enable(process.env.DEBUG || '')
+_enable(env.DEBUG || '')
 
 export type * from './types.ts'
 export { disable, enable, enabled, namespaces }
