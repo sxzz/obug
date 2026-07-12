@@ -10,9 +10,11 @@ import {
 import { humanize, selectColor } from './utils.ts'
 import type { Debugger, DebugOptions, InspectOptions } from './types.ts'
 
-let env = {}
+let env: Record<string, string | undefined> = {}
 try {
-  env = { ...process.env }
+  // eslint-disable-next-line no-void -- Access process.env here because it may throw in restricted environments.
+  void process.env.DEBUG
+  env = process.env
 } catch {}
 
 const colors: number[] =
