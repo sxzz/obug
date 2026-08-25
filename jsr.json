@@ -4,7 +4,7 @@
   "version": "2.1.4",
   "license": "MIT",
   "exports": {
-    ".": "./src/node.ts",
+    ".": "./src/browser.ts",
     "./browser": "./src/browser.ts",
     "./node": "./src/node.ts"
   },
