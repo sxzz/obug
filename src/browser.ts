@@ -132,6 +132,15 @@ function formatArgs(
 }
 
 /**
+ * Are `%c` CSS directives understood by the console? They are a developer
+ * tools feature, so DOM-less runtimes such as React Native print them
+ * verbatim instead of styling the output.
+ */
+function useColors(): boolean {
+  return typeof document !== 'undefined'
+}
+
+/**
  * Invokes `console.debug()` when available.
  * No-op when `console.debug` is not a "function".
  * If `console.debug` is not available, falls back
@@ -144,7 +153,7 @@ const log = console.debug || console.log || (() => {})
 const storage = localstorage()!
 
 const defaultOptions: Omit<Required<DebugOptions>, 'color'> = {
-  useColors: true,
+  useColors: useColors(),
 
   formatArgs,
   formatters: {
