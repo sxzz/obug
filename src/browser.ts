@@ -233,7 +233,7 @@ function enable(namespaces: string): void {
   _enable(namespaces)
 }
 
-// side-effect
+// eslint-disable-next-line unicorn/no-top-level-side-effects
 _enable(load())
 
 export type * from './types.ts'
