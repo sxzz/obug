@@ -139,10 +139,6 @@ function formatArgs(
  */
 const log = console.debug || console.log || (() => {})
 
-// Use non-null assertion operator because
-// we handle the case where storage is undefined in load/save.
-const storage = localstorage()!
-
 const defaultOptions: Omit<Required<DebugOptions>, 'color'> = {
   useColors: true,
 
@@ -176,28 +172,11 @@ export function createDebug(
   )
 }
 
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- */
-function localstorage(): Storage | undefined {
-  try {
-    // TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context
-    // The Browser also has localStorage in the global context.
-    return localStorage
-  } catch {
-    // Swallow
-    // XXX (@Qix-) should we be logging these?
-  }
-}
-
 function load(): string {
   let r: string | null | undefined
   try {
-    r = storage.getItem('debug') || storage.getItem('DEBUG')
+    // TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context.
+    r = localStorage.getItem('debug') || localStorage.getItem('DEBUG')
   } catch {
     // Swallow
     // XXX (@Qix-) should we be logging these?
@@ -214,9 +193,9 @@ function load(): string {
 function save(namespaces: string) {
   try {
     if (namespaces) {
-      storage.setItem('debug', namespaces)
+      localStorage.setItem('debug', namespaces)
     } else {
-      storage.removeItem('debug')
+      localStorage.removeItem('debug')
     }
   } catch {
     // Swallow
