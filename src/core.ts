@@ -19,7 +19,7 @@ export function createDebug(
   let namespacesCache: string | undefined
   let enabledCache: boolean | undefined
 
-  const debug: Debugger = (...args: any[]) => {
+  const debug = ((...args: any[]) => {
     if (!debug.enabled) {
       return
     }
@@ -58,7 +58,7 @@ export function createDebug(
     options.formatArgs.call(debug, diff, args as [string, ...any[]])
 
     debug.log(...args)
-  }
+  }) as Debugger
   debug.extend = function (this: Debugger, namespace: string, delimiter = ':') {
     return createDebug(this.namespace + delimiter + namespace, {
       useColors: this.useColors,
@@ -91,19 +91,6 @@ export function createDebug(
       enableOverride = v
     },
   })
-
-  // Never run the code below, this is just to make TypeScript happy
-  // eslint-disable-next-line no-constant-condition
-  if (false) {
-    debug.useColors = true
-    debug.color = 0
-    debug.formatArgs = () => {}
-    debug.formatters = {}
-    debug.inspectOpts = {}
-    debug.log = () => {}
-    debug.enabled = false
-    debug.humanize = String
-  }
 
   return debug
 }

@@ -3,6 +3,17 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
+    coverage: {
+      thresholds: {
+        'src/{core,utils}.ts': {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+          perFile: true,
+        },
+      },
+    },
     projects: [
       {
         test: {
