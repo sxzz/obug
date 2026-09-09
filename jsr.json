@@ -4,10 +4,9 @@
   "version": "2.2.1",
   "license": "MIT",
   "exports": {
-    ".": "./src/ansi.ts",
+    ".": "./src/browser.ts",
     "./browser": "./src/browser.ts",
     "./ansi": "./src/ansi.ts",
-    "./node": "./src/ansi.ts",
     "./plain": "./src/plain.ts"
   },
   "publish": {

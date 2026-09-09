@@ -21,7 +21,7 @@ try {
   for (const name of ['plain', 'browser', 'ansi']) {
     const entryDir = join(outDir, name)
     await build({
-      ...buildConfig[0],
+      ...buildConfig,
       cwd: root,
       config: false,
       entry: { [name]: join(root, 'src', `${name}.ts`) },

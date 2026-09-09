@@ -33,10 +33,6 @@
     "./plain": "./dist/plain.js",
     "./package.json": "./package.json"
   },
-  "main": "./dist/ansi.js",
-  "module": "./dist/ansi.js",
-  "unpkg": "./dist/browser.min.js",
-  "jsdelivr": "./dist/browser.min.js",
   "react-native": "./dist/plain.js",
   "types": "./dist/browser.d.ts",
   "files": [

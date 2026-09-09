@@ -17,8 +17,8 @@ A lightweight JavaScript debugging utility, forked from [debug](https://www.npmj
 <!-- Run `pnpm size` to update the minified + gzip (level 9, decimal kB) entry sizes below. Node built-ins remain external. -->
 
 - ✨ Minimal footprint
-  - 1.50 kB minified + gzipped (plain)
-  - 1.48 kB minified + gzipped (browser)
+  - 1.08 kB minified + gzipped (plain)
+  - 1.52 kB minified + gzipped (browser)
   - 1.73 kB minified + gzipped (ansi)
 - 📦 Zero dependencies
 - 📝 Full TypeScript support
@@ -34,32 +34,13 @@ A lightweight JavaScript debugging utility, forked from [debug](https://www.npmj
 npm install obug
 ```
 
-### Runtime entries
+### Runtimes
 
-The default npm entry selects an implementation through conditional exports:
+`obug` automatically selects ANSI output for Node.js/Bun/Deno, plain console output for React Native/Expo and Cloudflare Workers/Vercel Edge/Fastly Compute, and CSS console colors for browsers.
 
-| Runtime                                         | Entry  | Output                              |
-| ----------------------------------------------- | ------ | ----------------------------------- |
-| Node.js, Bun, Deno                              | `obug` | ANSI output to `stderr`             |
-| React Native / Expo                             | `obug` | React Native console output         |
-| Cloudflare Workers, Vercel Edge, Fastly Compute | `obug` | Plain console output                |
-| Browsers                                        | `obug` | Browser-style output to the console |
+To choose explicitly, import `obug/ansi`, `obug/plain`, or `obug/browser`.
 
-Use an explicit entry when a bundler does not provide the appropriate export condition:
-
-```ts
-import { createDebug } from 'obug/ansi' // terminal / ANSI output
-import { createDebug } from 'obug/browser' // browser-style console output
-import { createDebug } from 'obug/plain' // plain console output
-```
-
-JSR does not provide conditional exports. Its default entry remains the ANSI implementation, and the existing `node` subpath is retained as an alias. Use explicit subpaths for browser or plain console output:
-
-```ts
-import { createDebug } from 'jsr:@sxzz/obug' // terminal / ANSI output
-import { createDebug } from 'jsr:@sxzz/obug/browser' // browser-style console output
-import { createDebug } from 'jsr:@sxzz/obug/plain' // plain console output
-```
+JSR defaults to the browser implementation without automatic selection. Use `jsr:@sxzz/obug/ansi` for terminals or `jsr:@sxzz/obug/plain` for plain output.
 
 ## Usage
 
