@@ -1,8 +1,8 @@
 import { assert, describe, it } from 'vitest'
 
 const { createDebug, enable, disable } = (await import(
-  /* @vite-ignore */ globalThis.process ? '../src/node.ts' : '../src/browser.ts'
-)) as typeof import('../src/node')
+  /* @vite-ignore */ globalThis.process ? '../src/ansi.ts' : '../src/browser.ts'
+)) as typeof import('../src/ansi')
 
 describe('basic', () => {
   it('passes a basic sanity check', () => {

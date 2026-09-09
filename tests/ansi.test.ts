@@ -1,6 +1,6 @@
 import { formatWithOptions } from 'node:util'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createDebug, enable } from '../src/node'
+import { createDebug, enable } from '../src/ansi'
 import type { InspectOptions } from '../src/types'
 
 vi.mock('node:util', async (importActual) => {
@@ -17,7 +17,7 @@ beforeEach(() => {
   vi.clearAllMocks()
 })
 
-describe('debug node', () => {
+describe('debug ansi', () => {
   describe('formatting options', () => {
     it('calls util.formatWithOptions', () => {
       enable('*')

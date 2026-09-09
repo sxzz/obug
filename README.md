@@ -31,6 +31,33 @@ A lightweight JavaScript debugging utility, forked from [debug](https://www.npmj
 npm install obug
 ```
 
+### Runtime entries
+
+The default npm entry selects an implementation through conditional exports:
+
+| Runtime                                         | Entry  | Output                              |
+| ----------------------------------------------- | ------ | ----------------------------------- |
+| Node.js, Bun, Deno                              | `obug` | ANSI output to `stderr`             |
+| React Native / Expo                             | `obug` | React Native console output         |
+| Cloudflare Workers, Vercel Edge, Fastly Compute | `obug` | Plain console output                |
+| Browsers                                        | `obug` | Browser-style output to the console |
+
+Use an explicit entry when a bundler does not provide the appropriate export condition:
+
+```ts
+import { createDebug } from 'obug/ansi' // terminal / ANSI output
+import { createDebug } from 'obug/browser' // browser-style console output
+import { createDebug } from 'obug/plain' // plain console output
+```
+
+JSR does not provide conditional exports. Its default entry remains the ANSI implementation, and the existing `node` subpath is retained as an alias. Use explicit subpaths for browser or plain console output:
+
+```ts
+import { createDebug } from 'jsr:@sxzz/obug' // terminal / ANSI output
+import { createDebug } from 'jsr:@sxzz/obug/browser' // browser-style console output
+import { createDebug } from 'jsr:@sxzz/obug/plain' // plain console output
+```
+
 ## Usage
 
 ```ts

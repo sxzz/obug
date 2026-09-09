@@ -4,9 +4,11 @@
   "version": "2.1.4",
   "license": "MIT",
   "exports": {
-    ".": "./src/node.ts",
+    ".": "./src/ansi.ts",
     "./browser": "./src/browser.ts",
-    "./node": "./src/node.ts"
+    "./ansi": "./src/ansi.ts",
+    "./node": "./src/ansi.ts",
+    "./plain": "./src/plain.ts"
   },
   "publish": {
     "include": [

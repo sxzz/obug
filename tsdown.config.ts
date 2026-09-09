@@ -2,13 +2,13 @@ import { defineConfig } from 'tsdown'
 
 export default defineConfig([
   {
-    entry: ['./src/{browser,node}.ts'],
+    entry: ['./src/{ansi,browser,plain}.ts'],
     platform: 'neutral',
     target: 'es2015',
     dts: true,
     deps: {
       neverBundle(id, importer) {
-        if (importer?.endsWith('node.ts') && id.startsWith('node:')) {
+        if (importer?.endsWith('ansi.ts') && id.startsWith('node:')) {
           return true
         }
       },
