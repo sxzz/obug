@@ -1,30 +1,29 @@
 import { Buffer } from 'node:buffer'
 import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { resolve } from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { build } from 'tsdown'
 import buildConfig from '../tsdown.config.ts'
 
-const root = fileURLToPath(new URL('../', import.meta.url))
-const readmePath = join(root, 'README.md')
+const root = resolve(import.meta.dirname, '..')
+const readmePath = resolve(root, 'README.md')
 const readme = await readFile(readmePath, 'utf8')
 const section = /^- ✨ Minimal footprint\r?\n(?: {2}[^\r\n]*\r?\n)*/m
 if (!section.test(readme)) {
   throw new Error('Cannot find the Minimal footprint section in README.md')
 }
 
-const outDir = await mkdtemp(join(tmpdir(), 'obug-bundle-size-'))
+const outDir = await mkdtemp(resolve(tmpdir(), 'obug-bundle-size-'))
 const sizes: { name: string; bytes: number; gzipBytes: number }[] = []
 try {
   for (const name of ['plain', 'browser', 'ansi']) {
-    const entryDir = join(outDir, name)
+    const entryDir = resolve(outDir, name)
     await build({
       ...buildConfig,
       cwd: root,
       config: false,
-      entry: { [name]: join(root, 'src', `${name}.ts`) },
+      entry: { [name]: resolve(root, 'src', `${name}.ts`) },
       outDir: entryDir,
       dts: false,
       minify: true,
@@ -35,7 +34,7 @@ try {
     if (files.length !== 1 || files[0] !== `${name}.js`) {
       throw new Error(`Expected a single complete bundle for ${name}: ${files}`)
     }
-    const code = await readFile(join(entryDir, `${name}.js`))
+    const code = await readFile(resolve(entryDir, `${name}.js`))
     const gzipBytes = gzipSync(code, { level: 9 }).byteLength
     sizes.push({ name, bytes: Buffer.byteLength(code), gzipBytes })
   }
