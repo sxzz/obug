@@ -14,9 +14,12 @@ A lightweight JavaScript debugging utility, forked from [debug](https://www.npmj
 
 ## Key Differences from `debug`
 
+<!-- Run `pnpm size` to update the minified + gzip (level 9, decimal kB) entry sizes below. Node built-ins remain external. -->
+
 - ✨ Minimal footprint
-  - 7.7 kB package size
-  - 1.4 KB minified + gzipped for browsers
+  - 1.50 kB minified + gzipped (plain)
+  - 1.48 kB minified + gzipped (browser)
+  - 1.73 kB minified + gzipped (ansi)
 - 📦 Zero dependencies
 - 📝 Full TypeScript support
 - 🚀 Native ESM compatibility

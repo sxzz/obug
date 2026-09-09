@@ -1,6 +1,6 @@
-import { defineConfig } from 'tsdown'
+import type { UserConfig } from 'tsdown'
 
-export default defineConfig([
+const config: UserConfig[] = [
   {
     entry: ['./src/{ansi,browser,plain}.ts'],
     platform: 'neutral',
@@ -25,4 +25,6 @@ export default defineConfig([
     dts: false,
     minify: true,
   },
-])
+]
+
+export default config

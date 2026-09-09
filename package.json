@@ -59,6 +59,7 @@
     "lint": "eslint --cache .",
     "lint:fix": "pnpm run lint --fix",
     "build": "tsdown",
+    "size": "node scripts/bundle-size.ts",
     "dev": "tsdown --watch",
     "test": "vitest",
     "test:coverage": "vitest --project node --coverage",

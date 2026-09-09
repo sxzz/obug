@@ -11,7 +11,10 @@ export function createDebug(
   namespace: string,
   options?: DebugOptions,
 ): Debugger {
-  return createBrowserDebug(namespace, { ...options, useColors: false })
+  return createBrowserDebug(
+    namespace,
+    Object.assign({}, options, { useColors: false }),
+  )
 }
 
 export type * from './types.ts'
