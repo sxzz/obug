@@ -2,9 +2,9 @@ name: Unit Test
 
 on:
   push:
-    branches: [main, v1]
+    branches: [main, v1, v2]
   pull_request:
-    branches: [main, v1]
+    branches: [main, v1, v2]
 
 permissions: {}
 
